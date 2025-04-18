@@ -41,9 +41,10 @@ jobs:
         - name: Show Scan Report
           run: cat trivy-results.txt
   
-        - name: Upload Trivy scan results to GitHub Security tab
-          uses: github/codeql-action/upload-sarif@v3
+        - name: Upload Trivy scan results 
+          uses: actions/upload-artifact@v4
           with:
-              trivy_result_app: 'trivy-results.txt'
+            name: trivy_result_app
+            path: ./trivy-results.txt
           
   
