@@ -1,0 +1,44 @@
+name: tws-e-commerce-app Pipeline
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write 
+
+jobs: 
+    continuous_integration:
+      
+      runs-on: ubuntu-latest
+      env:
+          DOCKER_USERNAME: joakim077
+          
+      steps:
+        - name: Checkout Code
+          uses: actions/checkout@v4
+
+
+        - name: Unit testing
+          run: |
+            echo "Unit testing"
+        
+        - name: build docker Image
+          run: |
+            docker build -t myapp .
+
+        - name: Run Trivy vulnerability scan
+          uses: aquasecurity/trivy-action@0.30.0
+          with:
+            image-ref: 'myapp'
+            format: 'table'
+            exit-code: 0
+            severity: 'CRITICAL,HIGH'
+            output: 'trivy-results.sarif'
+  
+        - name: Upload Trivy scan results to GitHub Security tab
+          uses: github/codeql-action/upload-sarif@v3
+          with:
+              sarif_file: 'trivy-results.sarif'
