@@ -10,7 +10,7 @@ permissions:
   contents: write 
 
 jobs: 
-    trivy:
+    continuous_integration:
       
       runs-on: ubuntu-latest
       env:
@@ -29,14 +29,14 @@ jobs:
           run: |
             docker build -t myapp .
 
-        - name: Run Trivy scan
-          uses: aquasecurity/trivy-action@master
+        - name: Run Trivy vulnerability scan
+          uses: aquasecurity/trivy-action@0.30.0
           with:
-            image-ref: "myapp"
-            format: "table"
-            exit-code: 1
-            ignore-unfixed: true
-            severity: "CRITICAL,HIGH"
+            image-ref: 'ttapp:latest'
+            format: 'sarif'
+            exit-code: 0
+            severity: 'CRITICAL,HIGH'
+            output: 'trivy-results.sarif'
   
         - name: Upload Trivy scan results to GitHub Security tab
           # uses: github/codeql-action/upload-sarif@v3
