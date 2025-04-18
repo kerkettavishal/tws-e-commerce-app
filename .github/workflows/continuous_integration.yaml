@@ -57,14 +57,14 @@ jobs:
               org.opencontainers.image.source=${{ github.repository }}
               org.opencontainers.image.revision=${{ github.sha }}
         
-              - name: Run Trivy vulnerability scan
-              uses: aquasecurity/trivy-action@0.30.0
-              with:
-                image-ref: '${{ vars.DOCKER_USERNAME }}/easyshop-app:${{ github.sha }}'
-                format: 'table'
-                exit-code: 0
-                severity: 'CRITICAL,HIGH'
-                output: 'trivy-results.txt'
+        - name: Run Trivy vulnerability scan
+          uses: aquasecurity/trivy-action@0.30.0
+          with:
+            image-ref: '${{ vars.DOCKER_USERNAME }}/easyshop-app:${{ github.sha }}'
+            format: 'table'
+            exit-code: 0
+            severity: 'CRITICAL,HIGH'
+            output: 'trivy-results.txt'
       
         - name: Upload Trivy scan results 
           uses: actions/upload-artifact@v4
@@ -72,11 +72,6 @@ jobs:
             name: trivy_result_app
             path: ./trivy-results.txt
             retention-days: 7
-        
-    update_manifest_file:
-      runs-on: ubuntu-latest
-      needs: continuous_integration
-      steps:
 
         - name: Configure git for the action
           run: |
