@@ -64,28 +64,28 @@ jobs:
               org.opencontainers.image.source=${{ github.repository }}
               org.opencontainers.image.revision=${{ github.sha }}
 
+        - name: Configure git for the action
+          run: |
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            
+        - name: Pull latest changes from the remote branch
+          run: git pull origin master --rebase
 
-        - name: Update App image
+
+        - name: Update App image tag
           uses: Charlyzzz/update-k8s-image@v1.7.1
           with:
             manifest-path: kubernetes/08-easyshop-deployment.yaml
             new-image-tag: ${{ github.sha }}
             container-name: easyshop
 
-        - name: Update Migration image
+        - name: Update Migration image tag
           uses: Charlyzzz/update-k8s-image@v1.7.1
           with:
             manifest-path: kubernetes/12-migration-job.yaml
             new-image-tag: ${{ github.sha }}
             container-name: migration
-
-        - name: Configure git for the action
-          run: |
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-        
-        - name: Pull latest changes from the remote branch
-          run: git pull origin master --rebase
 
         - name: Commit deploy manifest on local repo
           run: |
