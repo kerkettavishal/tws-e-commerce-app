@@ -38,9 +38,9 @@ jobs:
             username: ${{ env.DOCKER_USERNAME }}
             password: ${{ secrets.DOCKER_PASSWORD }}
 
-        - name: Get git SHA short
-          id: sha
-          run: echo "sha_short=$(git rev-parse --short HEAD)" >> GITHUB_ENV
+        # - name: Get git SHA short
+        #   id: sha
+        #   run: echo "sha_short=$(git rev-parse --short HEAD)" >> GITHUB_ENV
           
 
         - name: Build and push App image
@@ -48,7 +48,7 @@ jobs:
           with:
             push: true
             tags: |
-              ${{ vars.DOCKER_USERNAME }}/easyshop-app:${{ env.sha_short}}
+              ${{ vars.DOCKER_USERNAME }}/easyshop-app:${{ github.sha }}
             labels: |
               org.opencontainers.image.source=${{ github.repository }}
               org.opencontainers.image.revision=${{ github.sha }}
@@ -59,7 +59,7 @@ jobs:
             file: ./scripts/Dockerfile.migration
             push: true
             tags: |
-              ${{ vars.DOCKER_USERNAME }}/easyshop-migration:${{ env.sha_short}}
+              ${{ vars.DOCKER_USERNAME }}/easyshop-migration:${{ github.sha}}
             labels: |
               org.opencontainers.image.source=${{ github.repository }}
               org.opencontainers.image.revision=${{ github.sha }}
@@ -69,14 +69,14 @@ jobs:
           uses: Charlyzzz/update-k8s-image@v1.7.1
           with:
             manifest-path: kubernetes/08-easyshop-deployment.yaml
-            new-image-tag: ${{ env.sha_short }}
+            new-image-tag: ${{ github.sha }}
             container-name: easyshop
 
         - name: Update Migration image
           uses: Charlyzzz/update-k8s-image@v1.7.1
           with:
             manifest-path: kubernetes/12-migration-job.yaml
-            new-image-tag: ${{ env.sha_short }}
+            new-image-tag: ${{ github.sha }}
             container-name: migration
 
         - name: Configure git for the action
