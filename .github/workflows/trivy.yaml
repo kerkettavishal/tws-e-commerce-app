@@ -10,7 +10,7 @@ permissions:
   contents: write 
 
 jobs: 
-    continuous_integration:
+    trivy-scan:
       
       runs-on: ubuntu-latest
       env:
