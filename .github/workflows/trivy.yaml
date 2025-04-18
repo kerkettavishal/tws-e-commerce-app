@@ -37,10 +37,13 @@ jobs:
             exit-code: 0
             severity: 'CRITICAL,HIGH'
             output: 'trivy-results.txt'
+        
+        - name: Show Scan Report
+          run: cat trivy-results.txt
   
         - name: Upload Trivy scan results to GitHub Security tab
-          # uses: github/codeql-action/upload-sarif@v3
-          # with:
-          #     sarif_file: 'trivy-results.sarif'
-          run: ls 
+          uses: github/codeql-action/upload-sarif@v3
+          with:
+              trivy_result_app: 'trivy-results.txt'
+          
   
